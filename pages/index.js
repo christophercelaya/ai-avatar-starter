@@ -5,42 +5,43 @@ import buildspaceLogo from '../assets/buildspace-logo.png';
 
 const Home = () => {
 
+// Add onChange
+const onChange = (event) => {
+  setInput(event.target.value);
+};
+  
+// Add generateAction
+const generateAction = async () => {
+console.log('Generating...');
 
-  // Add onChange
-  const onChange = (event) => {
-    setInput(event.target.value);
-  };
-  
-  // Add generateAction
-  const generateAction = async () => {
-    console.log('Generating...');
-  
-    const response = await fetch('/api/generate', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'image/jpeg',
-      },
-      body: JSON.stringify({ input }),
-    });
+const response = await fetch('/api/generate', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'image/jpeg',
+  },
+  body: JSON.stringify({ input }),
+});
     
-    const data = await response.json();
+const data = await response.json();
   
-    // If model still loading, drop that retry time
-    if (response.status === 503) {
-      console.log('Model is loading still :(.')
-      return;
-    }
-  
-    
-    // If another error, drop error
-    if (!response.ok) {
-      console.log(`Error: ${data.error}`);
-      return;
-    }
-  };
+// If model still loading, drop that retry time
+if (response.status === 503) {
+  console.log('Model is loading still :(.')
+  return;
+}
 
-  // Create state property
-  const [input, setInput] = useState('');
+// If another error, drop error
+if (!response.ok) {
+  console.log(`Error: ${data.error}`);
+  return;
+}
+
+// Set image data into state property
+setIMg(data.image);
+};
+
+// Create state property
+const [input, setInput] = useState('');
 
   return (
     <div className="root">
